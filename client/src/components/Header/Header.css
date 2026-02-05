@@ -1,0 +1,142 @@
+body {
+    font-family: 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+.header-container {
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  padding: 0.75rem 2rem;
+  display: flex;
+  justify-content: flex-start; 
+  align-items: center;
+  box-shadow: 0 0px 1px rgba(0, 0, 0);
+  gap: 1rem;
+}
+
+
+.header-logo {
+  font-size: 1.8rem;
+  margin: 0;
+  cursor: pointer;
+}
+
+.header-logo a {
+  text-decoration: none;
+}
+
+.first-half{
+   color: #6c47ff;
+   font-weight: 700;
+}
+
+.second-half{
+  color: #000000;
+  font-weight: 300;
+}
+
+.catalog-nav {
+  color: rgb(255, 255, 255);
+  background-color: #5d3ddd;
+  font-size: 16px;
+  text-decoration: none;
+  font-weight: normal;
+  padding: 0.5rem 2rem;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; 
+  position: relative;
+}
+
+.catalog-nav::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 2px;
+  background-color: currentColor;
+  box-shadow: 
+    0 -6px 0 currentColor,
+    0 6px 0 currentColor;
+}
+
+.catalog-nav:hover{
+    background-color: #000000;
+}
+
+.favorite-nav {
+  color: black;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.3s;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1rem;
+}
+
+.favorite-nav:hover {
+  color: rgb(255, 255, 255);
+  background-color: #000000;
+  
+}
+
+.heart-icon {
+  color : #4f2cd9;
+  position: relative;
+  width: 30px;
+  height: 20px;
+  vertical-align: middle; 
+  transform: translateY(-4px); 
+}
+
+.heart-icon::before,
+.heart-icon::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 16px;
+  height: 26px;
+  border-radius: 10px 10px 0 0;
+  background: currentColor;
+}
+
+.heart-icon::before {
+  left: 16px;
+  transform: rotate(-45deg);
+  transform-origin: 0 100%;
+}
+
+.heart-icon::after {
+  left: 0;
+  
+  transform: rotate(45deg);
+  transform-origin: 100% 100%;
+}
+
+.contact-info {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-left: auto; 
+}
+
+.city-label {
+  font-size: 1rem;
+  color: #000000;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.phone-label {
+  font-size: 1rem;
+  color: #000000;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
