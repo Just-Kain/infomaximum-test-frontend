@@ -2,83 +2,7 @@ import React, { FC } from 'react';
 import { Car } from '../../types/car';
 import { carStore } from '../../store/CarStore';
 import { observer } from 'mobx-react-lite';
-import styled from '@emotion/styled';
-
-const Card = styled.div`
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  overflow: hidden;
-  transition: transform 0.3s, box-shadow 0.3s;
-  
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-  }
-`;
-
-const CarImage = styled.img`
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-`;
-
-const CardContent = styled.div`
-  padding: 1rem;
-`;
-
-const CarTitle = styled.h3`
-  margin: 0 0 0.5rem 0;
-  font-size: 1.2rem;
-  color: #333;
-`;
-
-const CarInfo = styled.p`
-  margin: 0.25rem 0;
-  color: #666;
-  font-size: 0.9rem;
-`;
-
-const Price = styled.p`
-  margin: 1rem 0;
-  font-size: 1.3rem;
-  font-weight: bold;
-  color: #ff6b6b;
-`;
-
-const Actions = styled.div`
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
-`;
-
-const Button = styled.button`
-  flex: 1;
-  padding: 0.5rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s;
-`;
-
-const BuyButton = styled(Button)`
-  background-color: #4CAF50;
-  color: white;
-  
-  &:hover {
-    background-color: #45a049;
-  }
-`;
-
-const FavoriteButton = styled(Button)<{ isFavorite: boolean }>`
-  background-color: ${props => props.isFavorite ? '#ff6b6b' : '#f0f0f0'};
-  color: ${props => props.isFavorite ? 'white' : '#333'};
-  
-  &:hover {
-    background-color: ${props => props.isFavorite ? '#ff5252' : '#e0e0e0'};
-  }
-`;
+import './CarCard.css'; 
 
 interface CarCardProps {
   car: Car;
@@ -86,55 +10,90 @@ interface CarCardProps {
 }
 
 const CarCard: FC<CarCardProps> = observer(({ car, isFavoriteView = false }) => {
-  const { addToFavorites, removeFromFavorites, isFavorite } = carStore;
-
+  const favorite = carStore.isFavorite(car.id);
+  
   const handleFavoriteClick = () => {
-    if (isFavorite(car.id)) {
-      removeFromFavorites(car.id);
+    console.log('Favorite click:', {
+      carId: car.id,
+      currentFavorite: favorite,
+      action: favorite ? 'remove' : 'add'
+    });
+    
+    if (favorite) {
+      carStore.removeFromFavorites(car.id);
     } else {
-      addToFavorites(car);
+      carStore.addToFavorites(car);
     }
   };
 
+  const getFavoriteButtonClass = () => {
+    if (isFavoriteView) {
+      return 'car-card__button car-card__button--favorite-active';
+    }
+    return favorite 
+      ? 'car-card__button car-card__button--favorite-active'
+      : 'car-card__button car-card__button--favorite';
+  };
+
   return (
-    <Card>
-      <CarImage src={`http://localhost:4000${car.img_src}`} alt={`${car.brand} ${car.model}`} />
-      <CardContent>
-        <CarTitle>{car.brand} {car.model}</CarTitle>
-        <CarInfo>Год: {car.model_year}</CarInfo>
-        <CarInfo>Цвет: {car.color}</CarInfo>
+    <div className="car-card">
+      <img 
+        className="car-card__image"
+        src={`http://localhost:4000${car.img_src}`} 
+        alt={`${car.brand} ${car.model}`} 
+        onError={(e) => {
+          e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Car+Image';
+        }}
+      />
+      <div className="car-card__content">
+        <h3 className="car-card__title">{car.brand} {car.model}</h3>
+        <p className="car-card__info">Год: {car.model_year}</p>
+        <p className="car-card__info">Цвет: {car.color}</p>
         
-        {isFavoriteView && (
-          <CarInfo>{car.description}</CarInfo>
+        {isFavoriteView && car.description && (
+          <p className="car-card__info">{car.description}</p>
         )}
         
-        <Price>от {car.price}</Price>
+        <p className="car-card__price">от {car.price}</p>
         
-        <Actions>
+        <div className="car-card__actions">
           {isFavoriteView ? (
             <>
-              <BuyButton>Выбрать комплектацию</BuyButton>
-              <FavoriteButton 
-                isFavorite={true}
-                onClick={() => removeFromFavorites(car.id)}
+              <button 
+                className="car-card__button car-card__button--buy"
+                onClick={() => console.log('Выбрать комплектацию для', car.id)}
+              >
+                Выбрать комплектацию
+              </button>
+              <button 
+                className="car-card__button car-card__button--favorite-active"
+                onClick={() => carStore.removeFromFavorites(car.id)}
               >
                 Удалить
-              </FavoriteButton>
+              </button>
             </>
           ) : (
             <>
-              <BuyButton>Купить</BuyButton>
-              <FavoriteButton 
-                isFavorite={isFavorite(car.id)}
+              <button 
+                className="car-card__button car-card__button--buy"
+                onClick={() => console.log('Купить', car.id)}
+              >
+                Купить
+              </button>
+              <button 
+                className={getFavoriteButtonClass()}
                 onClick={handleFavoriteClick}
               >
-                {isFavorite(car.id) ? 'В избранном' : 'В избранное'}
-              </FavoriteButton>
+                {favorite 
+                ? <div className='full-heart-icon'></div>
+                : <div className='gg-heart'></div>
+                }
+              </button>
             </>
           )}
-        </Actions>
-      </CardContent>
-    </Card>
+        </div>
+      </div>
+    </div>
   );
 });
 

@@ -34,11 +34,13 @@ const Header: FC = observer(() => {
         </div>
       </div>
 
-      <a href="/favorites" className="favorite-nav">
+      <NavLink 
+        className="favorite-nav"
+        to="/favorites"
+      >
         <div className="heart-icon"></div>
         Избранное
-      </a>
-        
+      </NavLink>
     </header>
   );
 });
