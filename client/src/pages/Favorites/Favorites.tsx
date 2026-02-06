@@ -1,76 +1,89 @@
 import React, { FC } from 'react';
 import { observer } from 'mobx-react-lite';
+import { useNavigate } from 'react-router-dom';
 import { carStore } from '../../store/CarStore';
-import CarCard from '../../components/CarCard/CarCard';
 import Header from '../../components/Header/Header';
-import styled from '@emotion/styled';
-
-const PageContainer = styled.div`
-  min-height: 100vh;
-  background-color: #f5f5f5;
-`;
-
-const Content = styled.main`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-`;
-
-const CarsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-`;
-
-const EmptyMessage = styled.div`
-  text-align: center;
-  padding: 3rem;
-  font-size: 1.2rem;
-  color: #666;
-  
-  p {
-    margin: 1rem 0;
-  }
-`;
-
-const BackButton = styled.button`
-  padding: 0.75rem 1.5rem;
-  background-color: #ff6b6b;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  
-  &:hover {
-    background-color: #ff5252;
-  }
-`;
+import './Favorites.css';
 
 const Favorites: FC = observer(() => {
-  const { favorites } = carStore;
+  const { favorites, removeFromFavorites } = carStore;
+  const navigate = useNavigate();
 
   return (
-    <PageContainer>
+    <div className="favorites-page">
       <Header />
-      <Content>
+      <main className="favorites-content">
+        <h1 className="favorites-title">
+          Избранные товары - {favorites.length} позиций
+        </h1>
+        
         {favorites.length === 0 ? (
-          <EmptyMessage>
+          <div className="favorites-empty">
             <p>В избранном пока нет автомобилей</p>
-            <BackButton onClick={() => window.location.href = '/'}>
+            <button 
+              className="favorites-back-button"
+              onClick={() => navigate('/')}
+            >
               Перейти в каталог
-            </BackButton>
-          </EmptyMessage>
+            </button>
+          </div>
         ) : (
-          <CarsGrid>
+          <div className="favorites-grid">
             {favorites.map(car => (
-              <CarCard key={car.id} car={car} isFavoriteView={true} />
+              <div key={car.id} className="favorites-horizontal-card">
+                <div className="favorites-horizontal-card__image-container">
+                  <img 
+                    className="favorites-horizontal-card__image"
+                    src={`http://localhost:4000${car.img_src}`} 
+                    alt={`${car.brand} ${car.model}`} 
+                    onError={(e) => {
+                      e.currentTarget.src = 'https://via.placeholder.com/400x300?text=Car+Image';
+                    }}
+                  />
+                </div>
+                
+                <div className="favorites-horizontal-card__content">
+                  <div className="favorites-horizontal-card__header">
+                    <h3 className="favorites-horizontal-card__title">
+                      {car.brand} {car.model}
+                    </h3>
+
+                  </div>
+                  
+                  <div className="favorites-horizontal-card__detail-label">Год выпуска: {car.model_year}</div>
+                  <div className="favorites-horizontal-card__detail-label">Цвет: {car.color}</div>
+                  
+                  {car.description && (
+                    <div className="favorites-horizontal-card__description">
+                      {car.description}
+                    </div>
+                  )}
+
+                  <p className="favorites-horizontal-card__price">
+                    от {car.price}
+                  </p>
+                  
+                  <div className="favorites-horizontal-card__actions">
+                    <button 
+                      className="favorites-horizontal-card__button favorites-horizontal-card__button--primary"
+                      onClick={() => console.log('Выбрать комплектацию для', car.id)}
+                    >
+                      <span>Выбрать комплектацию</span>
+                    </button>
+                    <button 
+                      className="favorites-horizontal-card__button favorites-horizontal-card__button--danger"
+                      onClick={() => removeFromFavorites(car.id)}
+                    >
+                      <span>Удалить из избранного</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             ))}
-          </CarsGrid>
+          </div>
         )}
-      </Content>
-    </PageContainer>
+      </main>
+    </div>
   );
 });
 

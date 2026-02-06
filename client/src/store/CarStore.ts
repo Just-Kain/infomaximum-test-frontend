@@ -38,10 +38,12 @@ class CarStore {
   }
 
   addToFavorites = (car: Car) => {
-    if (!this.favorites.some(fav => fav.id === car.id)) {
-      this.favorites.push(car);
-      console.log('car add to favorite', car)
-    }
+    runInAction(() => {
+      if (!this.favorites.some(fav => fav.id === car.id)) {
+        this.favorites = [...this.favorites, car];
+        console.log('car add to favorite', car)
+      }
+    });
   }
 
   removeFromFavorites = (carId: number) => {
@@ -79,8 +81,8 @@ class CarStore {
       if (this.sortOption === 'brand') {
         return a.brand.localeCompare(b.brand);
       } else {
-        const priceA = parseFloat(a.price.replace('$', ''));
-        const priceB = parseFloat(b.price.replace('$', ''));
+        const priceA = parseFloat(a.price.replace('от $', ''));
+        const priceB = parseFloat(b.price.replace('от $', ''));
         return priceA - priceB;
       }
     });
